@@ -1,0 +1,38 @@
+connection:
+  host: example.org
+  port: 23
+  encoding: utf8
+  connect_timeout_seconds: 15
+
+login:
+  username: your_username
+  password: your_password
+
+# Expect/send steps to automate login. Patterns are regex.
+login_sequence:
+  - name: username_prompt
+    expect: "(?i)name:|username:|by what name"
+    send: "{username}"
+    timeout_seconds: 20
+  - name: password_prompt
+    expect: "(?i)password:"
+    send: "{password}"
+    timeout_seconds: 20
+
+behavior:
+  rate_limit_cmds_per_sec: 5
+
+# List of regex triggers; when pattern matches incoming text, optional send is emitted.
+triggers:
+  - name: prompt_hp_low
+    pattern: "HP:(?P<hp>\d+)/(\d+)"
+    cooldown_seconds: 2
+    send: "say My HP is {hp}!"
+
+# Aliases let you expand quick inputs you type into the console
+aliases:
+  - pattern: "^h$"
+    replacement: "help"
+  - pattern: "^n$"
+    replacement: "north"
+
